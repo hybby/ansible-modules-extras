@@ -144,11 +144,15 @@ def main():
     nf = tempfile.NamedTemporaryFile(delete = False)
 
     found = False
+    has_eof = False
     new_value = value
 
     for line in f:
 
-        if line.startswith('#'):
+        if line.startswith('# End of file'):
+            has_eof = True
+            continue
+        elif line.startswith('#'):
             nf.write(line)
             continue
 
@@ -214,6 +218,9 @@ def main():
         new_limit = domain + "\t" + limit_type + "\t" + limit_item + "\t" + str(new_value) + new_comment + "\n"
         message = new_limit
         nf.write(new_limit)
+
+    if has_eof:
+      nf.write("# End of file")
 
     f.close()
     nf.close()
